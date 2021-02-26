@@ -27,7 +27,7 @@ let recentTweets = { value: "" };
 let stocks = [];
 let millisecondsForNewDay =
   new Date().getHours() * (60000 * 60) + new Date().getHours() * 60;
-
+let email = 'anthonyfinix@gmail.com';
 (async function example() {
   let driver = await new Builder().forBrowser("chrome").build();
 
@@ -83,9 +83,16 @@ let millisecondsForNewDay =
     console.log("ERROR");
     console.log(e.message);
     console.log("*******************************");
-    // console.log(await driver.findElement(By.xpath('//*[@id="react-root"]/div/div/div[2]/main/div/div/div[1]/div')).getText())
-    await driver.quit();
-    process.exit();
+    try{
+      if(!!(await driver.findElement(By.xpath('//*[@id="react-root"]/div/div/div[2]/main/div/div/div[1]/div')).getText())){
+        await driver.findElement(By.xpath(usernameTextbox)).sendKeys(email, Key.RETURN);
+        await driver.findElement(By.xpath(passwordTextbox)).sendKeys(password, Key.RETURN);
+     }
+    }catch(e){
+      await driver.quit();
+      process.exit();
+    }
+     
   }
 
   // get app component
@@ -132,5 +139,5 @@ let millisecondsForNewDay =
       await driver.quit();
       process.exit();
     }
-  }, 1000);
+  }, 800);
 })();
