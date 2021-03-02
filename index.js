@@ -3,17 +3,17 @@ const getLatestTweetText = require("./getLatestTweetText");
 
 let [nodePath, scriptPath, username, password, columnno] = process.argv;
 if (!username) {
-  console.log('username is required')
+  console.log("username is required");
   return process.exit(1);
 }
 if (!password) {
-  console.log('password is required')
-  return process.exit(1)
-};
+  console.log("password is required");
+  return process.exit(1);
+}
 if (!columnno) {
-  console.log('column no to scrape is required')
-  return process.exit(1)
-};
+  console.log("column no to scrape is required");
+  return process.exit(1);
+}
 
 let url =
   "https://mobile.twitter.com/login?hide_message=true&redirect_after_login=https%3A%2F%2Ftweetdeck.twitter.com%2F%3Fvia_twitter_login%3Dtrue";
@@ -27,7 +27,7 @@ let recentTweets = { value: "" };
 let stocks = [];
 let millisecondsForNewDay =
   new Date().getHours() * (60000 * 60) + new Date().getHours() * 60;
-let email = 'anthonyfinix@gmail.com';
+let email = "anthonyfinix@gmail.com";
 (async function example() {
   let driver = await new Builder().forBrowser("chrome").build();
 
@@ -71,6 +71,24 @@ let email = 'anthonyfinix@gmail.com';
     await driver.quit();
     process.exit();
   }
+  try {
+    if (
+      !!(await driver
+        .findElement(
+          By.xpath(
+            '//*[@id="react-root"]/div/div/div[2]/main/div/div/div[1]/div'
+          )
+        )
+        .getText())
+    ) {
+      await driver
+        .findElement(By.xpath(usernameTextbox))
+        .sendKeys(email, Key.RETURN);
+      await driver
+        .findElement(By.xpath(passwordTextbox))
+        .sendKeys(password, Key.RETURN);
+    }
+  } catch (e) {}
 
   // wait for twitter deck column wrapper
   try {
@@ -83,16 +101,8 @@ let email = 'anthonyfinix@gmail.com';
     console.log("ERROR");
     console.log(e.message);
     console.log("*******************************");
-    try{
-      if(!!(await driver.findElement(By.xpath('//*[@id="react-root"]/div/div/div[2]/main/div/div/div[1]/div')).getText())){
-        await driver.findElement(By.xpath(usernameTextbox)).sendKeys(email, Key.RETURN);
-        await driver.findElement(By.xpath(passwordTextbox)).sendKeys(password, Key.RETURN);
-     }
-    }catch(e){
-      await driver.quit();
-      process.exit();
-    }
-     
+    await driver.quit();
+    process.exit();
   }
 
   // get app component
@@ -115,17 +125,24 @@ let email = 'anthonyfinix@gmail.com';
   }, millisecondsForNewDay);
 
   setInterval(async () => {
+    let exist = false;
     let latestValue;
     try {
-      latestValue = await appColumns.findElement(By.css(columnCssSelectPath)).getText();
+      latestValue = await appColumns
+        .findElement(By.css(columnCssSelectPath))
+        .getText();
       if (latestValue !== recentTweets.value) {
         recentTweets.value = latestValue;
         if (recentTweets.value.includes("ALERT:")) {
           let stock = recentTweets.value.match(/\$[A-Za-z0-9]+/);
-          if (!!stock) {
+          stocks.map(value =>
+            stock[0].replace("$", "") == value ? (exist = true) : null
+          );
+          if (!!stock & !exist) {
             console.log(stock[0].replace("$", ""));
             stocks.push(stock[0]);
           }
+          
         }
       }
       console.log("_");
