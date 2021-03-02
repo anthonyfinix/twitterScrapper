@@ -135,14 +135,15 @@ let email = "anthonyfinix@gmail.com";
         recentTweets.value = latestValue;
         if (recentTweets.value.includes("ALERT:")) {
           let stock = recentTweets.value.match(/\$[A-Za-z0-9]+/);
-          stocks.map(value =>
-            stock[0].replace("$", "") == value ? (exist = true) : null
-          );
-          if (!!stock & !exist) {
-            console.log(stock[0].replace("$", ""));
-            stocks.push(stock[0]);
+          if (!!stock) {
+            stocks.map(value =>
+              stock[0].replace("$", "") == value ? (exist = true) : null
+            );
+            if (!exist) {
+              console.log(stock[0].replace("$", ""));
+              stocks.push(stock[0]);
+            }
           }
-          
         }
       }
       console.log("_");
