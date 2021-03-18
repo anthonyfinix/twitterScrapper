@@ -4,12 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index"
+    "start": "nodemon index"
   },
   "keywords": [],
   "author": "Anthony Finix",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.7",
     "selenium-webdriver": "^4.0.0-beta.1"
   }
 }
