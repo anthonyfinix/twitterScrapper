@@ -1,10 +1,11 @@
-require('dotenv').config()
+require("dotenv").config();
 const { Builder, By, Key, until } = require("selenium-webdriver");
-let chrome = require("selenium-webdriver/chrome");
+const chrome = require("selenium-webdriver/chrome");
 const getLatestTweetText = require("./getLatestTweetText");
-
+const { getToken } = require("td-ameritrade-auth");
 let [nodePath, scriptPath, username, password, columnno] = process.argv;
-console.log(process.env)
+
+console.log(process.env);
 if (!username) {
   if (!process.env.TWITTER_USERNAME) {
     console.log("username is not provided");
@@ -13,7 +14,7 @@ if (!username) {
   username = process.env.TWITTER_USERNAME;
 }
 if (!password) {
-  console.log(process.env)
+  console.log(process.env);
   if (!process.env.TWITTER_PASSWORD) {
     console.log("password is not provided");
     return process.exit(1);

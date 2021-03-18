@@ -10,7 +10,9 @@
   "author": "Anthony Finix",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.21.1",
     "dotenv": "^8.2.0",
-    "selenium-webdriver": "^4.0.0-beta.1"
+    "selenium-webdriver": "^4.0.0-beta.1",
+    "td-ameritrade-auth": "0.0.8"
   }
 }
