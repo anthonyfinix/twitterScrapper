@@ -1,18 +1,31 @@
+require('dotenv').config()
 const { Builder, By, Key, until } = require("selenium-webdriver");
+let chrome = require("selenium-webdriver/chrome");
 const getLatestTweetText = require("./getLatestTweetText");
 
 let [nodePath, scriptPath, username, password, columnno] = process.argv;
+console.log(process.env)
 if (!username) {
-  console.log("username is required");
-  return process.exit(1);
+  if (!process.env.TWITTER_USERNAME) {
+    console.log("username is not provided");
+    return process.exit(1);
+  }
+  username = process.env.TWITTER_USERNAME;
 }
 if (!password) {
-  console.log("password is required");
-  return process.exit(1);
+  console.log(process.env)
+  if (!process.env.TWITTER_PASSWORD) {
+    console.log("password is not provided");
+    return process.exit(1);
+  }
+  password = process.env.TWITTER_PASSWORD;
 }
 if (!columnno) {
-  console.log("column no to scrape is required");
-  return process.exit(1);
+  if (!process.env.TWITTERDECK_COLUMN_NO) {
+    console.log("column no not provided");
+    return process.exit(1);
+  }
+  columnno = process.env.TWITTERDECK_COLUMN_NO;
 }
 
 let url =
@@ -29,7 +42,11 @@ let millisecondsForNewDay =
   new Date().getHours() * (60000 * 60) + new Date().getHours() * 60;
 let email = "anthonyfinix@gmail.com";
 (async function example() {
-  let driver = await new Builder().forBrowser("chrome").build();
+  // let driver = await new Builder().forBrowser("chrome").build();
+  let driver = new Builder()
+    .forBrowser("chrome")
+    .setChromeOptions(new chrome.Options())
+    .build();
 
   // go to page
   try {
